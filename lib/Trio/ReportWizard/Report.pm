@@ -569,6 +569,14 @@ sub build_rows {
 
   $level += 1;
 
+  foreach my $row_idx (keys %{$data->{rows} || {}}) {
+    #PREFORMAT DATA
+    my $row = $data->{rows}->{$row_idx}; #CURRENT ROW
+    $self->__format_row( $row->{data} );
+  }
+
+  foreach my $row_idx (sort { $self->_sort_rows($a, $b, $data->{rows}) } keys %{$data->{rows} || {}}) {
+
   foreach my $row_idx (sort { $self->_sort_rows($a, $b, $data->{rows}) } keys %{$data->{rows} || {}}) {
     my $row = $data->{rows}->{$row_idx}; #CURRENT ROW
     my $row_to_insert = undef;
@@ -637,8 +645,6 @@ sub build_rows {
     if ($curr_nrows) {
       $row_to_insert->{dims}->{ $row->{pos} }->{rowspan} = $curr_nrows;
     }
-
-    $self->__format_row( $row->{data} );
   }
 
   if ($nrows > 1) {
